@@ -2,7 +2,7 @@ import random
 import string
 import tempfile
 from typing import List
-
+from week_1 import task_1
 
 class Test:
     files: List[str] = []
@@ -23,7 +23,7 @@ class Test:
 
             if i % 2 == 0:
                 content = Test.get_content()
-            file = tempfile.NamedTemporaryFile(dir=tmp_dir, delete=False)
+            file = tempfile.NamedTemporaryFile(dir='./tmp', delete=False)
             file.write(content)
             file.flush()
 
@@ -33,3 +33,5 @@ class Test:
 
 
 Test.generate_test_files()
+
+task_1.find_duplicates()

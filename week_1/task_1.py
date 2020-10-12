@@ -30,9 +30,10 @@ def find_duplicates(path, check_mode=True):
         print(f"fn_original: {fn_original}")
         while (l := len(v)) > 0:
             fn: Path = v.pop()
-
-            # print(f"fn: {fn}")
-            # fn.unlink()
-            print(fn_original.samefile(fn))
+            if check_mode:
+                print(fn_original.samefile(fn))
+            else:
+                print(f"fn: {fn}")
+                fn.unlink()
         print(v)
         print()
