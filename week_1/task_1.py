@@ -1,9 +1,11 @@
 import hashlib
+import logging
 from collections import defaultdict
 from pathlib import Path
 from pprint import pprint
+from config import get_logger
 
-tmp_dir = '../tests/tmp'
+logger = get_logger(__name__)
 
 
 def get_hash(path_to_file: Path) -> str:
@@ -14,26 +16,25 @@ def get_hash(path_to_file: Path) -> str:
     return file_hash.hexdigest()
 
 
-def find_duplicates(path, check_mode=True):
-    p = Path(path)
+def find_duplicates(path: str, check_mode=True):
+    path = Path(path)
 
-    hs = defaultdict(list)
-    for f in p.iterdir():
+    hashes = defaultdict(list)
+    for f in path.iterdir():
         h = get_hash(f)
-        hs[h].append(f)
-        print(f"f: {f}, {h}")
-    pprint(hs)
+        hashes[h].append(f)
+        logger.debug(f"file: {f}, hash: {h}")
 
-    for k, v in hs.items():
-        print(k)
+    pprint(f"hashes: {hashes}")
+    for k, v in hashes.items():
         fn_original: Path = v.pop()
-        print(f"fn_original: {fn_original}")
+        logger.info(f"fn_original: {fn_original}")
         while (l := len(v)) > 0:
             fn: Path = v.pop()
+            logger.info(f"fn: {fn}")
             if check_mode:
-                print(fn_original.samefile(fn))
+                logger.info(f'files with the same hash the same?: {fn_original.samefile(fn)}')
             else:
-                print(f"fn: {fn}")
+                logger.info(f"fn: {fn}")
                 fn.unlink()
-        print(v)
-        print()
+                fn_original.link_to(fn)
